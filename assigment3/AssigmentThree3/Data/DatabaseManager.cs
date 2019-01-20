@@ -19,14 +19,12 @@ namespace Data
 
         public void Add(string name, string description)
         {
-            command = new SqlCommand("INSERT into Test (Name,Description) " + " VALUES ('" + name + "', '" + description + "');", command);
-            command.ExecuteNonQuery();
+            
         }
 
         public void Delete(int id)
         {
-            command = new SqlCommand("Delete from Test where id=" + id + ";", command);
-            command.ExecuteNonQuery();
+            
         }
 
         public Test Get(int id)
