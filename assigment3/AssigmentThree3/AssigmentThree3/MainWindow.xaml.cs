@@ -14,6 +14,7 @@ using System.Data.SqlClient;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data;
+using Logic;
 
 namespace AssigmentThree3
 {
@@ -23,44 +24,79 @@ namespace AssigmentThree3
     public partial class MainWindow : Window
     {
         private SqlDataAdapter dataAdapter = new SqlDataAdapter();
+        DatabaseManager databaseManager;
+        int nextId;
 
+        /// <summary>
+        /// Iniate database manager
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
+            UpdateDataGrid();
+
+            databaseManager = new DatabaseManager();
+
+            nextId = 0;
+        }
+
+        /// <summary>
+        /// sync the datagrid with the database
+        /// </summary>
+        private void UpdateDataGrid()
+        {
             try
             {
-                // Specify a connection string. Replace the given value with a 
-                // valid connection string for a Northwind SQL Server sample
-                // database accessible to your system.
                 String connectionString =
                     @"data source=(LocalDB)\v11.0;attachdbfilename=|DataDirectory|\Database1.mdf;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework";
 
-                // Create a new data adapter based on the specified query.
-                dataAdapter = new SqlDataAdapter("select * from Test" , connectionString);
+                dataAdapter = new SqlDataAdapter("select * from Test", connectionString);
 
-                // Create a command builder to generate SQL update, insert, and
-                // delete commands based on selectCommand. These are used to
-                // update the database.
                 SqlCommandBuilder commandBuilder = new SqlCommandBuilder(dataAdapter);
 
-                // Populate a new data table and bind it to the BindingSource.
                 DataTable table = new DataTable();
                 table.Locale = System.Globalization.CultureInfo.InvariantCulture;
                 dataAdapter.Fill(table);
 
-                dataGrid = table;
+                grid.DataContext = table.DefaultView;
+
             }
             catch (SqlException)
             {
-                MessageBox.Show("To run this example, replace the value of the " +
-                    "connectionString variable with a connection string that is " +
-                    "valid for your system.");
+                MessageBox.Show("NO CONNECTYION");
+                this.Close();
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
+        }
+        /// <summary>
+        /// Insert with generic values based on id
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            databaseManager.Add(nextId++, nextId.ToString(), nextId.ToString() + nextId.ToString() + nextId.ToString());
+            UpdateDataGrid();
+        }
+
+        /// <summary>
+        /// Delete based on selected ID
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            databaseManager.Delete(grid.SelectedIndex);
+            UpdateDataGrid();
         }
     }
 }

@@ -5,6 +5,9 @@ namespace Data
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
 
+    /// <summary>
+    /// Code first entity model of Test table
+    /// </summary>
     public partial class Model1 : DbContext
     {
         public Model1()
